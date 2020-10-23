@@ -15,7 +15,7 @@ interface Content {
 }
 class Crowller {
   private url = `https://movie.douban.com/`
-  private rawHtml = ''
+  private filePath = path.resolve(__dirname, '../data/movies.json')
 
   async getRawHtml() {
     const result = await superagent.get(this.url)
@@ -29,11 +29,7 @@ class Crowller {
     $('.ui-slide-item ul').each((_, ele) => {
       const movie: Imovie = {
         title: $(ele).find('.title').text().trim(),
-        grade:
-          $(ele)
-            .find('.rating .subject-rate')
-            .text()
-            .trim() || '暂无评分',
+        grade: $(ele).find('.rating .subject-rate').text().trim() || '暂无评分',
       }
       movies.push(movie)
     })
@@ -42,10 +38,7 @@ class Crowller {
   }
 
   generateJsonContent(movies: Array<Imovie>) {
-    const filePath = path.resolve(
-      __dirname,
-      '../data/movies.json'
-    )
+    const filePath = this.filePath
     let fileContent: Content = {}
     if (fs.existsSync(filePath)) {
       fileContent = {
@@ -57,15 +50,16 @@ class Crowller {
     return fileContent
   }
 
+  writeFile(content: string) {
+    fs.writeFileSync(this.filePath, content)
+  }
+
   async initSpiderProcess() {
-    const filePath = path.resolve(
-      __dirname,
-      '../data/movies.json'
-    )
+    const filePath = this.filePath
     const html = await this.getRawHtml()
     const movies = this.getMovieInfo(html)
     const fileContent = this.generateJsonContent(movies)
-    fs.writeFileSync(filePath, JSON.stringify(fileContent))
+    this.writeFile(JSON.stringify(fileContent))
   }
 
   constructor() {
