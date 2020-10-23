@@ -12,6 +12,15 @@ interface Content {
 }
 
 export class MovieAnalysis implements Analysis {
+  private static instance: MovieAnalysis
+
+  static getInstance() {
+    if (!MovieAnalysis.instance) {
+      MovieAnalysis.instance = new MovieAnalysis()
+    }
+    return MovieAnalysis.instance
+  }
+
   private getMovieInfo(html: string) {
     const $ = cheerio.load(html)
     const movies: Array<Imovie> = []
@@ -43,4 +52,6 @@ export class MovieAnalysis implements Analysis {
     const movies = this.getMovieInfo(html)
     return this.generateJsonContent(movies, filePath)
   }
+
+  private constructor() {}
 }

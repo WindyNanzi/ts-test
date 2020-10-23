@@ -13,16 +13,16 @@ class Crowller {
   private filePath = path.resolve(__dirname, '../data/movies.json')
   private url = `https://movie.douban.com/`
 
-  async getRawHtml() {
+  private async getRawHtml() {
     const result = await superagent.get(this.url)
     return result.text
   }
 
-  writeFile(content: string) {
+  private writeFile(content: string) {
     fs.writeFileSync(this.filePath, content)
   }
 
-  async initSpiderProcess() {
+  private async initSpiderProcess() {
     const html = await this.getRawHtml()
     const fileContent = this.Analysis.analysis(html, this.filePath)
     this.writeFile(fileContent)
@@ -33,5 +33,5 @@ class Crowller {
   }
 }
 
-const movieAnalysis = new MovieAnalysis()
+const movieAnalysis = MovieAnalysis.getInstance()
 new Crowller(movieAnalysis)
