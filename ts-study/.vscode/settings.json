@@ -3,6 +3,7 @@
   "prettier.semi": false,
   "prettier.singleQuote": true,
   "[typescript]": {
+    "editor.formatOnPaste": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }
